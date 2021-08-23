@@ -1,0 +1,21 @@
+#version 330 core
+
+in vec3 v0;
+in vec3 v1;
+
+uniform float depthPivot;
+layout (location = 0) out vec3 c0;
+layout (location = 1) out vec4 c1;
+
+varying float vz;
+
+void main()
+{
+	float depth = -vz;
+	float distance = depth - depthPivot;
+	if (gl_FrontFacing)
+		distance = -distance;
+	c0 = v0;
+	c1 = vec4(vec3(v1), distance);
+
+}

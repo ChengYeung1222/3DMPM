@@ -1,0 +1,32 @@
+#version 330 core
+
+uniform float depthPivot;
+uniform float winWidth;
+uniform float winHeight;
+uniform float frustumNear;
+uniform float halfFrustumWidth;
+
+layout (location = 0) out float z0;
+layout (location = 1) out float z1; 
+
+varying float vz;
+
+vec2 UnprojectCoord(vec2 p, float w, float h)
+{
+	vec2 width = vec2(w, h);
+	return halfFrustumWidth * (p / width * 2.0 - vec2(1.0f, 1.0f)); 
+}
+
+void main()
+{
+	float depth = -vz;
+	float realDepth = depth - depthPivot;
+
+	vec2 UnprojWinCoord = UnprojectCoord(gl_FragCoord.xy, winWidth, winHeight); 
+	vec2 UnprojCoord2 = UnprojWinCoord * depth / frustumNear;
+
+	vec3 UnprojCoord3 = vec3(UnprojCoord2.xy, realDepth);
+
+	z0 = realDepth;
+	z1 = length(UnprojCoord3);
+}
