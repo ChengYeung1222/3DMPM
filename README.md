@@ -16,9 +16,10 @@ by Hao Deng, Yang Zheng, Jin Chen*, Shuyan Yu, Zhankun Liu, Xiancheng Mao
 
 ## Dependencies required
 >ScanProjection
-> + glad
-> + glfw
-> + libpng
+> + glad 0.1.29
+> + glfw 3.2.1
+> + libpng 1.6.17
+> + Zlib 1.2.8
 
 >CNNnetwork
 > + Ubuntu 18.04
@@ -29,16 +30,32 @@ by Hao Deng, Yang Zheng, Jin Chen*, Shuyan Yu, Zhankun Liu, Xiancheng Mao
 >
 ## Usage
 1) Run `main.m` in "eigenfunctions" library to result in a series of Laplace-Beltrami eigenvalues and eigenfunctions. 
-2) Execute the Visual Studio solution file `ScanProjection.sln` in "ScanProjection" library to project shape descriptors into images `*.bin`.
+2) Execute the Visual Studio solution file `ScanProjection.sln` in "ScanProjection" library to project shape descriptors into images `*.bin`.  
+To set the projection program, you need to specify the input and output directories in `params.ini`:  
+```/angular2/
+    [meshPath]
+    YOUR_3D_MODEL_PATH
+    
+    [propPath]
+    YOUR_PROPERTY_CSV_PATH
+    
+    [voxelPath]
+    YOUR_VOXEL_CSV_PATH
+    
+    [binDir]
+    YOUR_BIN_FILE_OUTPUT_DIRECTIONARY
+    
+    [pngDir]
+    YOUR_FILE_FILE_OUTPUT_DIRECTIONARY
+```
 3) Run the network training procedure `finetune.py` with loading parameters pretrained on [ImageNet](https://www.cs.toronto.edu/~guerzhoy/tf_alexnet/bvlc_alexnet.npy) on Linux. 
-4) Run the testing procedure (after executing training) on Linux:
+4) Run the testing procedure (after executing training) on Linux:  
 ```
-sh for_cycle_2.sh
+    sh for_cycle_2.sh
+```  
+,specifying  
 ```
-
-,specifying 
-```
-tf.flags.DEFINE_integer('pre_size', <your_prediction_batch_size>, 'prediction size')
-tf.flags.DEFINE_integer('iter_epoch', <your_batchs_per_epoch>, 'pre_size data per iter_epoch')
-```
+    tf.flags.DEFINE_integer('pre_size', <your_prediction_batch_size>, 'prediction size')
+    tf.flags.DEFINE_integer('iter_epoch', <your_batchs_per_epoch>, 'pre_size data per iter_epoch')
+```  
 in `classifier_v4.py`.
