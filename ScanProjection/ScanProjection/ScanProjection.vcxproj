@@ -173,7 +173,7 @@
   <ItemGroup>
     <ClInclude Include="CalcFocus.h" />
     <ClInclude Include="DebugUtility.h" />
-    <ClInclude Include="Feature.h" />
+    <ClInclude Include="FileLoad.h" />
     <ClInclude Include="GrayBmp.h" />
     <ClInclude Include="params.h" />
     <ClInclude Include="MakeShader.h" />

@@ -28,9 +28,9 @@ FocusSpatialInfo::~FocusSpatialInfo()
 	if (m_normals != NULL)
 		delete[] m_normals;
 	if (m_kd != NULL)
-		delete m_kd;
+		kd_free(m_kd);
 	if (m_kdData != NULL)
-		delete []m_kdData;
+		delete[] m_kdData;
 }
 
 void FocusSpatialInfo::Make(MeshInfo *pMeshinfo, double range, double lowerBnd)
@@ -63,7 +63,6 @@ void FocusSpatialInfo::MakeKdTree()
 double FocusSpatialInfo::ClosestPoint(const DPoint3 &src, DPoint3 &dst) const
 {
 	std::set<int> DstTris;
-
 
 	DPoint3 closest;
 	kdres* kdResult = kd_nearest(m_kd, (double*)&src);
@@ -108,6 +107,24 @@ double FocusSpatialInfo::ClosestPoint(const DPoint3 &src, DPoint3 &dst) const
 	dst = closestPoint;
 
 	return minDist;
+}
+
+
+bool FocusSpatialInfo::IsFootWall(const DPoint3& src) const
+{
+	kdres* kdclosest = kd_nearest(m_kd, (const double*)&src);
+	DPoint3 dummy;
+	int idx = *(int*)kd_res_item(kdclosest, (double*)&dummy);
+	kd_res_free(kdclosest);
+
+	const vector<DPoint3>& vertices = m_pMeshInfo->GetVertices();
+	const DPoint3* base = &vertices[0];
+
+	const DPoint3& normal = m_normals[idx];
+	const DPoint3& closest = vertices[idx];
+
+	DPoint3 dir = src - closest;
+	return dir.Dot(normal) >= 0.0;
 }
 
 void FocusSpatialInfo::CalcTriangleInfo()

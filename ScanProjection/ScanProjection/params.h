@@ -5,9 +5,9 @@
 #include "../Utility/primitive.h"
 
 #define WITHOUT_NORMAL 0 // with normals or not
-#define KDims  4 
 
-//#define KDims 16
+#define KDims 16 // dimension of properties
+
 extern int imageWidth;
 
 extern GLfloat GridRes;    // 10.0f£¬1f,5f,15f,25f,50f
@@ -20,6 +20,7 @@ extern double nanPropValue;
 extern double nanDepthValue;
 
 extern double distanceScl;
+extern bool withPng;
 
 #ifdef _MSC_VER
 #include <Windows.h>
@@ -33,8 +34,5 @@ extern char voxelPath[MAX_PATH];
 
 extern char binDir[MAX_PATH];
 extern char pngDir[MAX_PATH];
-
-
-extern bool LoadParams(const char* path);
 
 #endif // _PARAMS_H

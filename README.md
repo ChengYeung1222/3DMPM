@@ -31,6 +31,12 @@ by Hao Deng, Yang Zheng, Jin Chen*, Shuyan Yu, Zhankun Liu, Xiancheng Mao
 ## Usage
 1) Run `main.m` in "eigenfunctions" library to result in a series of Laplace-Beltrami eigenvalues and eigenfunctions. 
 2) Execute the Visual Studio solution file `ScanProjection.sln` in "ScanProjection" library to project shape descriptors into images `*.bin`.  
+The paths and directionaries in params.ini should be specified. And the
+dimension of properties is specified by using macro in `params.h` as:
+
+```
+    #define KDims 16 // dimension of properties
+```
 To set the projection program, you need to specify the input and output directories in `params.ini`:  
 ```/angular2/
     [meshPath]
@@ -47,6 +53,12 @@ To set the projection program, you need to specify the input and output director
     
     [pngDir]
     YOUR_FILE_FILE_OUTPUT_DIRECTIONARY
+```
+User can switch off the output of png files in `params.ini` by setting
+
+```
+    [withPng]
+    0
 ```
 3) Run the network training procedure `finetune.py` with loading parameters pretrained on [ImageNet](https://www.cs.toronto.edu/~guerzhoy/tf_alexnet/bvlc_alexnet.npy) on Linux. 
 4) Run the testing procedure (after executing training) on Linux:  

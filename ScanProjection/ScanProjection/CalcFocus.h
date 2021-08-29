@@ -14,6 +14,7 @@ public:
 
 	void Make(MeshInfo *pMeshinfo, double range, double lowerBnd);
 	double ClosestPoint(const DPoint3 &src, DPoint3 &dst) const;
+	bool IsFootWall(const DPoint3& src) const;
 
 private:
 	void MakeKdTree();

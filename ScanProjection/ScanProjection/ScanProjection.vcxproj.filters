@@ -21,9 +21,6 @@
     <ClCompile Include="MakeShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="GrayBmp.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="glad.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -42,15 +39,12 @@
     <ClCompile Include="tri_dist.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="GrayBmp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Feature.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="MakeShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="GrayBmp.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="DebugUtility.h">
@@ -63,6 +57,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="tri_dist.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GrayBmp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FileLoad.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

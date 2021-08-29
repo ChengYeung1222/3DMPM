@@ -7,14 +7,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <learnopengl/filesystem.h>
 #include <learnopengl/shader_m.h>
-#include <learnopengl/camera.h>
 
 #include <string.h>
 #include <iomanip>
 
-#include "FileConvert.h"
+#include "fileload.h"
 #include "../Utility/Feature.h"
 #include "../MeshUtility/MeshUtility.h"
 #include "MakeShader.h"
@@ -22,9 +20,9 @@
 #include "CalcFocus.h"
 #include "DebugUtility.h"
 
-//#include <learnopengl/model.h>
 using namespace std;
 
+#define Fields Feature
 
 // global variables
 const double FieldOfView = 2.0 * atan(imageWidth*GridRes*0.5 / (DepthOffset*fovRatio));
@@ -575,6 +573,7 @@ void set_view(const DPoint3& src, DPoint3& dst, glm::mat4& view,
 		glm::vec3(dst.x, dst.y, dst.z),
 		glm::vec3(up.x, up.y, up.z));
 
+	pShaderSimple->setMat4("view", view);
 }
 
 void SetDistBuff(const DPoint3& src, const Mesh& mesh, float* buff)
@@ -722,7 +721,6 @@ double get_target(const DPoint3& src, DPoint3& dst, void** params)
 		glReadBuffer(drawBuffers[1]);
 		glReadPixels(0, 0, imageWidth, imageWidth, GL_RED, GL_FLOAT, rBuff);
 
-
 		DPoint2 centroid;
 		calc_centroid(rBuff, imageWidth, centroid);
 		double eta = exp(-etaDecay * iStep);
@@ -753,10 +751,11 @@ double get_target(const DPoint3& src, DPoint3& dst, void** params)
 
 template <int K>
 void project(const Mesh &mesh, const vector<DPoint3> &voxels, 
-			 double (*minDist)(const DPoint3 &, DPoint3 &, void **), 
+			 double (*focus)(const DPoint3 &, DPoint3 &, void **), 
 			 void **params)
 {
 	char fileName[MAX_PATH];
+	// the channels output to the png files
 	int visLoc[] = { 1, 2, 3 };
 
 	const int layerSize = imageWidth * imageWidth;
@@ -774,17 +773,18 @@ void project(const Mesh &mesh, const vector<DPoint3> &voxels,
 	int nIncre = nVoxels / 100;
 	int iSteps = nIncre;
 	int percent = 0;
-	printf("start projection...");
+	printf("start projection...    ");
 	for (int i = 0; i < nVoxels; i++) {
 		if (iSteps++ == nIncre) {
 			iSteps = 0;
-			printf("\b\b\b%3d", percent++);
+			printf("\b\b\b\b%3d%%", percent++);
 		}
 
 		const DPoint3 &curVoxel = voxels[i];
 
+		// calculate the projection direction
 		DPoint3 closest;
-		double len = minDist(curVoxel, closest, params);
+		double len = focus(curVoxel, closest, params);
 		DPoint3 dir = closest - curVoxel;
 		dir /= len;
 
@@ -798,14 +798,20 @@ void project(const Mesh &mesh, const vector<DPoint3> &voxels,
 							glm::vec3(closest.x, closest.y, closest.z),
 							glm::vec3(up.x, up.y, up.z));
 
+		// scan conversion here
 		pShader->use();
 		pShader->setMat4("view", view);
+
+		const FocusSpatialInfo* pFsi =
+			reinterpret_cast<FocusSpatialInfo*>(params[0]);
+		bool bFootWall = pFsi->IsFootWall(origin + curVoxel);
+		signedNanDepthVal = bFootWall ? -nanDepthValue : nanDepthValue;
 
 		ScanFeatures3<K>(mesh, buff, features);
 		NormalizeDistance<K>(features, layerSize);
 
 		// output binary file
-		sprintf(fileName, "%s%d.bin", binDir, i);
+		sprintf(fileName, "%s\\%d.bin", binDir, i);
 		ofstream output(fileName, ios::out | ios::binary);
 #if WITHOUT_NORMAL
 		output.write((char*)features, sizeof(Feature<K+1, float>)*layerSize);
@@ -814,11 +820,13 @@ void project(const Mesh &mesh, const vector<DPoint3> &voxels,
 #endif // WITHOUT_NORMAL
 		output.close();
 
-		// out put png
-		sprintf(fileName, "%s%d.png", pngDir, i);
-		VisInPng(features, visLoc, imageWidth, imageWidth, fileName);
+		// output png
+		if (withPng) {
+			sprintf(fileName, "%s\\%d.png", pngDir, i);
+			VisInPng(features, visLoc, imageWidth, imageWidth, fileName);
+		}
 	}
-	printf("\b\b\bdone.\n");
+	printf("\b\b\b\bdone.\n");
 
 	delete[] buff;
 	delete[] features;
@@ -861,7 +869,7 @@ void ReadFiles(Mesh &mesh,  vector<Fields<K, float>> &ori_pro,
 	cout << "properties loaded" << endl;
 
 	// read the voxels to generate the images
-	readP(voxelPath, known_p);
+	readVox(voxelPath, known_p);
 	int nKnownVoxels = known_p.size();
 	for (int i = 0; i < nKnownVoxels; i++)
 		known_p[i] -= origin;
@@ -896,6 +904,7 @@ void proc_with_gl()
 
 int main()
 {
+	LoadParams("params.ini");
 	proc_with_gl();
 
 	return 0;
