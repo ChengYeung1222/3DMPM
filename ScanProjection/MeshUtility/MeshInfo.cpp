@@ -1,4 +1,3 @@
-#define MESH_UTILITY_EXPORTS
 
 #include <algorithm>
 #include <queue>
