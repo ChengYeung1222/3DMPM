@@ -7,7 +7,7 @@ _Learning 3D Mineral Prospectivity from 3D Geological Models Using Convolutional
 by Hao Deng, Yang Zheng, Jin Chen*, Shuyan Yu, Zhankun Liu, Xiancheng Mao
 
 ## Hardware requirements
-- GeForce RTX 2080 Ti
+- GeForce GTX 1050 Ti or higher
 
 ## Program language 
 - MATLAB (eigenfunctions)
