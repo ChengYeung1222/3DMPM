@@ -52,4 +52,21 @@ _[Learning 3D Mineral Prospectivity from 3D Geological Models Using Convolutiona
    3. Inference
        - Initial execution of `classifier_v4.py` ensures functionality, followed by executing `for_cycle_2.sh` for batch processing.
 
+## Citation
+```/angular2/
+@article{DENG2022105074,
+title = {Learning 3D mineral prospectivity from 3D geological models using convolutional neural networks: Application to a structure-controlled hydrothermal gold deposit},
+journal = {Computers & Geosciences},
+volume = {161},
+pages = {105074},
+year = {2022},
+issn = {0098-3004},
+doi = {https://doi.org/10.1016/j.cageo.2022.105074},
+url = {https://www.sciencedirect.com/science/article/pii/S0098300422000383},
+author = {Hao Deng and Yang Zheng and Jin Chen and Shuyan Yu and Keyan Xiao and Xiancheng Mao},
+keywords = {Mineral prospectivity mapping, Convolutional neural networks, 3D geological models, Gold deposits, Structure-controlled deposits},
+abstract = {Three-dimensional (3D) geological models are typical data sources in 3D mineral prospectivity modeling. However, identifying prospectivity-informative predictor variables from 3D geological models is a challenging and work-intensive task. Motivated by the ability of convolutional neural networks (CNNs) to learn intrinsic features, in this paper, we present a novel method that leverages CNNs to learn 3D mineral prospectivity from 3D geological models. By exploiting this learning ability, the proposed method simplifies the complex correlations of mineralization and circumvent the need for designing the predictor variables. Specifically, to analyze unstructured 3D geological models using CNNs—whose inputs should be structured—we develop a 2D CNN framework where the geometry of geological boundary is compiled and reorganized into multi-channel images and fed into the CNN. This ensures the effective and efficient training of the CNN while facilitating the representation of mineralization control. The presented method is applied to a typical structure-controlled hydrothermal deposit, the Dayingezhuang gold deposit in eastern China; the presented method is compared with prospectivity modeling methods using designed predictor variables. The results show that the presented method has a performance boost in terms of the 3D prospectivity modeling and decreases the workload and prospecting risk in the prediction of deep-seated orebodies.}
+}
+```
+
 
