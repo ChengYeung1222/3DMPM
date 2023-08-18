@@ -2,8 +2,8 @@
  
 This is the implementation of the 3DMPM architecture described in this paper: 
 
-_Learning 3D Mineral Prospectivity from 3D Geological Models Using Convolutional Neural Networks,_
-
+_[Learning 3D Mineral Prospectivity from 3D Geological Models Using Convolutional Neural Networks](https://www.sciencedirect.com/science/article/pii/S0098300422000383)._
+	
 ## Hardware requirements
 - GeForce GTX 1050 Ti or higher
 
