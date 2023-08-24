@@ -27,31 +27,75 @@ _[Learning 3D Mineral Prospectivity from 3D Geological Models Using Convolutiona
 > + TensorBoard 1.10.0
 >
 ## Usage
-1. Generating Eigenfunctions (MATLAB)
-   1. Data Preprocessing
+### Generating Eigenfunctions (MATLAB)
+1. Data Preprocessing
+      <p>Start with the initial model data, often exported as GOCAD surface files. It's advisable to save these as text files for easy access. Eigenfunction calculation requires two types of data:</p>
       
-      - Prior to calculating the Laplace-Beltrami eigenfunctions, it is imperative to ensure that the triangulation of the geological model is regular. Two types of data are crucial for the computation of eigenfunctions: `face.txt`, which contains the indices of vertices forming each triangle, and `vert.txt`, which contains the vertex data for each triangle.
+      - `face.txt`: Contains indices of vertices corresponding to each triangle constituting the model.
+      - `vert.txt`: Holds vertex data for each triangle in the model.
         
-   2. Computation of Eigenfunctions 
+2. Computation 
       
-      - Subsequently, the eigenfunctions program is employed to calculate the eigenfunctions of the model. The computed eigenfunctions are stored within the PHI table. Selecting a specific number of eigenfunctions influences the resulting projection's number of channels. In this instance, 16 eigenfunctions are considered. Columns two through seventeen are saved as a CSV file, denoted as `P.csv` for subsequent projections.
+      Proceed to compute the eigenfunctions of the model using the `eigenfunctions` program. The computed eigenfunctions are stored in the PHI table. Let's consider an example where 16 eigenfunctions are selected. Save the 16 columns of eigenfunction data as a CSV file (`P.csv`) to be used during projection.
 
-2. Projection using ScanProjection (C++)
-   1. Configuration File Modification
-      - `params.ini`: Adjust paths. Open the `params.ini` file and primarily modify the last five paths, which correspond to the storage path for the model file, model eigenfunction files, pending projection voxel data files, generated binary projection files, and generated image projection files.
-      - `params.h`: Open the `params.h` header file. The parameter "WITHOUT_NORMAL" indicates whether normal vectors are enabled, with a value of 0 indicating the output of normal vectors. The parameter "KDims" signifies the number of eigenfunctions. The total number of channels in the generated projection is calculated as follows: channels for normal vectors (3 channels) + distance (1 channel) + number of eigenfunctions (assuming 16) = 20 channels.
-      - `params.cpp`: Fine-tune parameters like "DepthOffset" based on geological considerations.
-   2. Execution
-      - To ensure data accuracy, preliminary output checks are recommended. Inspect generated PNG files for texture variations and validate the presence of fluctuating patterns. Confirm appropriate projection angles; excessive black regions indicate potential algorithm adjustments. Noise indicates a model-file mismatch.
+### Projection using ScanProjection (C++)
+1. Modify Configuration Files
+   1. Specify the input and output directories in `params.ini` by updating the paths for the last five entries:
+	```/angular2/
+	    [meshPath]
+	    YOUR_3D_MODEL_PATH
+	    
+	    [propPath]
+	    YOUR_PROPERTY_CSV_PATH
+	    
+	    [voxelPath]
+	    YOUR_VOXEL_CSV_PATH
+	    
+	    [binDir]
+	    YOUR_BIN_FILE_OUTPUT_DIRECTIONARY
+	    
+	    [pngDir]
+	    YOUR_FILE_FILE_OUTPUT_DIRECTIONARY
+	```
+   2. Open the `params.h` file:
+      - `WITHOUT_NORMAL`: Toggle to enable normal vectors (0 for enabled).
+      - `KDims`: Specify the number of eigenfunctions (e.g., 16 in this case).
+      <p>The resulting channels in the projection are: normals (3 channels) + distance (1 channel) + eigenfunction channels (16 channels) = 20 channels.</p>
+   3. Modify the `params.cpp` file:
+      
+      Adjust the `DepthOffset` parameter based on geological scale or other relevant factors.
 
-3. Training and Inference (Python)
+
+ 
+2. Initiate Projection
+	<p>Before proceeding with deep learning, validate data accuracy by performing an output check:</p>
+ 
+      - Inspect generated PNG files to identify texture variations. Texture-less images indicate data issues.
+      - Verify the projection angles; excessive black regions might require further adjustments to the projection algorithm.
+      - Widespread noise suggests mismatched model or eigenfunction files.
+
+
+
+### Training and Prediction (Python)
    1. Data Preparation
-      - Organize data into lists, associating voxel labels with binary file paths. Split known region voxels into training and validation sets.
+
+      The multi-channel binary files generated in the previous step serve as raw data for training and prediction. Create a list pairing voxel labels with corresponding binary file paths. Divide known area voxels into training and validation sets.
+      
    2. Model Training
-      - `alexnet.py`: the backbone network architecture.
-      - `finetune.py`: Involves network training. Modify data paths and the model's storage location, then execute the network training procedure `finetune.py`.
-   3. Inference
-       - Initial execution of `classifier_v4.py` ensures functionality, followed by executing `for_cycle_2.sh` for batch processing.
+      
+      - `alexnet.py`: The backbone network architecture.
+      - `finetune.py`: Train the model using the prepared data. Adjust data source and model save paths as needed.
+      
+   3. Prediction
+      - Run `classifier_prediction.py` first to ensure error-free execution.
+      - Execute the `for_cycle_2.sh` batch file for continuous training and prediction cycles, specifying
+        
+```
+    tf.flags.DEFINE_integer('pre_size', <your_prediction_batch_size>, 'prediction size')
+    tf.flags.DEFINE_integer('iter_epoch', <your_batchs_per_epoch>, 'pre_size data per iter_epoch')
+```  
+in `classifier_v4.py`.
+
 
 ## Citation
 ```/angular2/
