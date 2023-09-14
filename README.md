@@ -60,7 +60,7 @@ _[Learning 3D Mineral Prospectivity from 3D Geological Models Using Convolutiona
    2. Open the `params.h` file:
       - `WITHOUT_NORMAL`: Toggle to enable normal vectors (0 for enabled).
       - `KDims`: Specify the number of eigenfunctions (e.g., 16 in this case).
-      <p>The resulting channels in the projection are: normals (3 channels) + distance (1 channel) + eigenfunction channels (16 channels) = 20 channels.</p>
+      <p>The resulting channels in the projection: normals (3 channels) + distance (1 channel) + eigenfunction (16 channels) = 20 channels.</p>
    3. Modify the `params.cpp` file:
       
       Adjust the `DepthOffset` parameter based on geological scale or other relevant factors.
